@@ -30,6 +30,11 @@ class ImageProcessor:
         model = get_model(model_id="parking-space-ipm1b/4", api_key=self.roboflow_key)
         results = model.infer(image)
         detections = sv.Detections.from_inference(results[0].dict(by_alias=True, exclude_none=True))
+
+        if len(detections.data) < 1:
+            print("No detected places.")
+            return ImageProcessingResult(0, 0, 0, [])
+
         total = len(detections.data["class_name"])
         occupied_count = np.count_nonzero(detections.data['class_name'] == 'occupied')
         empty_count = np.count_nonzero(detections.data['class_name'] == 'empty')
