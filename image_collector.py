@@ -20,8 +20,8 @@ class ImageCollector:
             os.makedirs(save_folder)
     
     def collect_images(self):
-        vcap = cv2.VideoCapture(self.camera_url)
         while True:
+            vcap = cv2.VideoCapture(self.camera_url)
             ret, frame = vcap.read()
             if ret:
                 timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")
