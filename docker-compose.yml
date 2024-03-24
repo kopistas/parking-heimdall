@@ -1,0 +1,6 @@
+version: '3'
+services:
+  image_collector:
+    build: .
+    volumes:
+      - ./training_images:/usr/src/app/training_images
