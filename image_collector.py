@@ -28,7 +28,7 @@ class ImageCollector:
                 cv2.imwrite(f'{self.save_folder}/{timestamp}.png', frame)
                 print(f'Image saved: {timestamp}.png')
 
-                time.sleep(300) # Sleep for 5 minutes
+                time.sleep(600) # Sleep for 10 minutes
             else:
                 print('Error capturing image')
                 break
