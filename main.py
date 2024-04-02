@@ -2,10 +2,9 @@ from image_processing import ImageProcessor
 import cv2
 from dotenv import load_dotenv
 
-from roboflow import Roboflow
-import supervision as sv
 import time
 import os
+from weights_version import WeightsVersion
 
 load_dotenv()
 
@@ -14,11 +13,11 @@ load_dotenv()
 camera_login = os.getenv("CAMERA_LOGIN")
 camera_pass = os.getenv("CAMERA_PASSWORD")
 camera_address = os.getenv("CAMERA_ADDRESS")
-roboflow_key = os.getenv("ROBOFLOW_KEY")
+yolo_repo_path = os.getenv("YOLO_REPO_PATH")
 
 # Services
 
-image_processor = ImageProcessor(roboflow_key=roboflow_key)
+image_processor = ImageProcessor(weights=WeightsVersion.MARK_1, yolo_repo_path=yolo_repo_path)
 
 # Methods
 
@@ -29,6 +28,7 @@ def start(demo):
         # frame = cv2.imread('processed_images/test_1.png')
         
         result = image_processor.process_image(frame)
+        print(result)
         
         if demo:
             cv2.imshow('VIDEO', result.annotated_image)

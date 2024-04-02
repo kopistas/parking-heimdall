@@ -1,9 +1,9 @@
-from inference import get_model
-# import supervision to visualize our results
 import supervision as sv
-# import cv2 to helo load our image
 import cv2
 import numpy as np
+import torch
+from weights_version import WeightsVersion
+import os
 
 class ImageProcessingResult:
 
@@ -21,39 +21,29 @@ class ImageProcessingResult:
 class ImageProcessor:
 
     last_result: ImageProcessingResult
+    model: any
 
-    def __init__(self, roboflow_key):
-        self.roboflow_key = roboflow_key
+    def __init__(self, weights: WeightsVersion, yolo_repo_path=str):
+        current_file_directory = os.path.dirname(os.path.abspath(__file__))
+        path = f"{current_file_directory}/weights/{weights.value}.pt"
+        self.model = torch.hub.load(yolo_repo_path, 'custom', path=path, source='local')
 
     def process_image(self, image) -> ImageProcessingResult:
-        # model = get_model(model_id="parking-spot-detector-a84ql/1", api_key=self.roboflow_key)
-        model = get_model(model_id="parking-space-ipm1b/4", api_key=self.roboflow_key)
-        results = model.infer(image)
-        detections = sv.Detections.from_inference(results[0].dict(by_alias=True, exclude_none=True))
+        results = self.model(image)
 
-        if len(detections.data) < 1:
-            print("No detected places.")
-            return ImageProcessingResult(0, 0, 0, [])
+        detected_objects = results.xyxy[0] 
+        
+        names = self.model.module.names if hasattr(self.model, 'module') else self.model.names
 
-        total = len(detections.data["class_name"])
-        occupied_count = np.count_nonzero(detections.data['class_name'] == 'occupied')
-        empty_count = np.count_nonzero(detections.data['class_name'] == 'empty')
+        inv_names = {v: k for k, v in names.items()}
 
-        # print(f"Detected places:\nFree: {empty_count}\nOccupied: {occupied_count}")
+        occupied_idx = inv_names['occupied']
+        free_idx = inv_names['free']
 
-        bounding_box_annotator = sv.BoundingBoxAnnotator()
-        label_annotator = sv.LabelAnnotator()
+        occupied_count = (detected_objects[:, -1] == occupied_idx).sum().item()
+        free_count = (detected_objects[:, -1] == free_idx).sum().item()
 
-        annotated_image = bounding_box_annotator.annotate(
-            scene=image, detections=detections)
-        annotated_image = label_annotator.annotate(
-            scene=annotated_image, detections=detections)
-        cv2.imwrite("processed_images/last_annotated.png", annotated_image)
-        result = ImageProcessingResult(total=total,
-                                       occupied_count=occupied_count,
-                                       empty_count=empty_count,
-                                       annotated_image=annotated_image)
-        self.last_result = result
-        print(f"Result: {result}")
-        # sv.plot_image(annotated_image)
-        return result
+        annotated_image = np.squeeze(results.render())
+
+        total_count = occupied_count + free_count
+        return ImageProcessingResult(total_count, occupied_count, free_count, annotated_image)
