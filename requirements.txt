@@ -1,0 +1,10 @@
+opencv-python
+opencv-python-headless
+pandas
+scikit-image
+scipy
+torch
+torchvision
+supervision==0.18.0
+python-dotenv==1.0.1
+requests
