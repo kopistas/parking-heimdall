@@ -17,7 +17,7 @@ yolo_repo_path = os.getenv("YOLO_REPO_PATH")
 
 # Services
 
-image_processor = ImageProcessor(weights=WeightsVersion.MARK_1, yolo_repo_path=yolo_repo_path)
+image_processor = ImageProcessor(weights=WeightsVersion.MARK_2, yolo_repo_path=yolo_repo_path)
 
 # Methods
 
@@ -37,4 +37,4 @@ def start(demo):
         else:
             time.sleep(20)
 
-start(demo=False)
+start(demo=True)
