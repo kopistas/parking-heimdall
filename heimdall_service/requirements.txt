@@ -8,3 +8,5 @@ torchvision
 supervision==0.18.0
 python-dotenv==1.0.1
 requests
+flask
+ultralytics

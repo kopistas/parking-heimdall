@@ -1,0 +1,7 @@
+version: '3'
+services:
+  heimdall_service:
+    build: ./heimdall_service
+    network_mode: "host"
+    ports:
+      - "9981:9981"
