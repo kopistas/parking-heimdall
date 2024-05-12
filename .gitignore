@@ -1,3 +1,4 @@
 heimdall/
-.env
+heimdall_service/.env
 processed_images/
+heimdall_service/__pycache__
