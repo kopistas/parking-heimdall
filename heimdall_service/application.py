@@ -7,7 +7,7 @@ class Application:
         self.gateway_service = gateway_service  # Assuming GatewayService is initialized appropriately
 
     def start_vision_service(self):
-        self.vision_service_thread = threading.Thread(target=self.vision_service.start, args=(True,))
+        self.vision_service_thread = threading.Thread(target=self.vision_service.start, args=(False,))
         self.vision_service_thread.start()
 
     def start_gateway_service(self):

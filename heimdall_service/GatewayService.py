@@ -23,7 +23,7 @@ class GatewayService:
         def get_status():
             current_result = self.vision_service.result
             if current_result == None:
-                return Response('No data at the moment', -1)
+                return Response('Нет данных о парковочных местах', -1)
             description = self.description_service.generate_description(current_result.empty_count)
             response = Response(description, current_result.empty_count)
             return jsonify(response.to_dict())

@@ -19,9 +19,10 @@ class VisionServiceRuntime:
                 print("Failed to grab frame")
                 break
 
-            self.result = self.image_processor.process_image(frame)
-            print(self.result)
+            result = self.image_processor.process_image(frame)
+            print(result)
 
+            self.result = result
             if demo:
                 cv2.imshow('VIDEO', result.annotated_image)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
